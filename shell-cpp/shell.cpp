@@ -81,7 +81,7 @@ char* tokenize(char *input, const char *delim, char **rest) {
 }
 
 // searches the PATH variable to find a process
-bool findProcess(char *proc, char *fullPath) {
+bool find_process(char *proc, char *fullPath) {
     // get and deep-copy the PATH variable
     char *pathenv = getenv("PATH");
     char *path = new char[strlen(pathenv) + 1];
@@ -112,7 +112,7 @@ bool findProcess(char *proc, char *fullPath) {
     return found;
 }
 
-command* makeCommand(char input[]) {
+command* make_command(char input[]) {
     int totalArgs = counter(input, ' ') + 2;
     char *rest = NULL;
     char *token = tokenize(input, " ", &rest);
@@ -155,7 +155,7 @@ command* makeCommand(char input[]) {
     return cmd;
 }
 
-pipeline* makePipeline(char input[]) {
+pipeline* make_pipeline(char input[]) {
     int totalCommands = counter(input, '|') + 1;
     pipeline *pipe = new pipeline(totalCommands);
  
@@ -164,7 +164,7 @@ pipeline* makePipeline(char input[]) {
 
     int i = 0;
     while (token != NULL) {
-        pipe->cmds[i] = makeCommand(token);
+        pipe->cmds[i] = make_command(token);
         token = tokenize(NULL, "|", &rest);
         i++;
     }
@@ -177,14 +177,7 @@ void close_pipes(int* pipes) {
     close(pipes[1]);
 }
 
-void executePipeline(pipeline* p) {
-    // int **pipes = new int*[p->count - 1];
-    // for (int i = 0; i < p->count - 1; ++i) {
-    //     // save old fds and create new fds
-    //     pipes[i] = new int[2];
-    //     pipe(pipes[i]);
-    // }
-
+void execute_pipeline(pipeline* p) {
 
     // create pipes    
     int *pipes = new int[2 * p->count];
@@ -230,7 +223,7 @@ void executePipeline(pipeline* p) {
             }
             
             char fullPath[200];
-            findProcess(cmd->proc, fullPath);
+            find_process(cmd->proc, fullPath);
             // exec this command
             execv(fullPath, cmd->argv);
         }
@@ -257,8 +250,8 @@ int main() {
         if (strcmp(input, "exit") == 0) {
             break;
         }
-        pipeline *pipe = makePipeline(input);
-        executePipeline(pipe);
+        pipeline *pipe = make_pipeline(input);
+        execute_pipeline(pipe);
         delete pipe;
     }
 
