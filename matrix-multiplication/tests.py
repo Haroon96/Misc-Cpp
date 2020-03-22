@@ -27,7 +27,7 @@ def makeMatrix(r, c, f):
 if __name__ == '__main__':
     
     for i in range(20):
-        mn, mx = 5, 20
+        mn, mx = 2000, 2000
         a, b = random.randint(mn, mx), random.randint(mn, mx)
         comm = random.randint(mn, mx)
 
